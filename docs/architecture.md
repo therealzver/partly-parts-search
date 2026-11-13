@@ -11,8 +11,9 @@ needed. No router, backend, or extra state library is planned.
 share `vite.config.js`. The test setup provides DOM matchers and cleanup.
 ESLint checks JavaScript and JSX, React hooks, and refresh compatibility.
 
-Redux Toolkit and React Redux are installed for subsequent work. A store and
-Provider will be introduced when the search flow first needs shared state.
+`src/app/store.js` configures a single `parts` reducer and exports the application
+store plus `createAppStore` for isolated tests. `src/main.jsx` wraps App in the
+React Redux Provider. The placeholder UI does not initiate requests yet.
 
 ## Current mock API (milestone 2)
 
@@ -20,7 +21,34 @@ Provider will be introduced when the search flow first needs shared state.
 `src/services/mockFixtures.js`. Requests use a fixed 500 ms Promise delay, honor
 AbortSignal, and return copies of demo data. A reserved article triggers a
 controlled error. See `docs/api-contract.md` for the complete contract.
-The service is not yet connected to Redux or the UI.
+Redux thunks call this service; the UI is not yet connected to search behavior.
+
+## Current Redux state (milestone 3)
+
+`src/features/parts/partsSlice.js` owns the submitted article, manufacturers,
+selected manufacturer, offers, and separate status/error/request ID fields for
+each request type. Statuses are `idle`, `loading`, `succeeded`, and `failed`.
+Simple selectors expose UI data without memoization.
+
+- `articleChanged(article)` clears dependent state when the article changes.
+  The submitted value is stored as supplied; normalization remains in the API.
+- `manufacturerSelected(brand)` accepts a loaded manufacturer or `null` to clear
+  selection. Changing selection clears offers and invalidates their request ID.
+- `fetchManufacturers(article)` starts a search, also updating the article and
+  resetting dependent state if it changed. A refresh of the same article preserves
+  the current selection/offers; a response that no longer contains the selected
+  manufacturer clears them.
+- `fetchOffers({ article, brand })` requires the exact current submitted article
+  and selected manufacturer. Obsolete or absent selections are rejected by its
+  thunk condition without making an API call. New offers requests clear old offers.
+- Both thunks forward `thunkAPI.signal`. The dispatch promise exposes `abort()`;
+  cancellation resets the active request to `idle` without a user-facing error.
+  Other rejections produce `failed` and an error message. Empty arrays succeed.
+- Both fulfilled and rejected reducers require the active request ID and matching
+  current inputs. Changing inputs invalidates IDs immediately, so switching away
+  and back cannot revive old results. No controllers or promises enter Redux state.
+  Request cancellation belongs to callers: later UI lifecycle code should abort
+  obsolete dispatch promises. State guards protect correctness even without abort.
 
 ## Proposed search flow for later milestones
 
@@ -44,9 +72,12 @@ behavior warrants them. Do not create these future modules in milestone 1.
 
 ## Verification
 
-Use Vitest and React Testing Library for user-visible behavior. Later tests
-should cover mock API contracts, async state transitions, failures, empty
-responses, and out-of-order responses. The App smoke test confirms the placeholder renders. Mock API unit tests use
-fake timers to cover data contracts, normalization, empty results, cancellation,
-controlled failures, resource cleanup, and fixture isolation. `npm run verify` runs ESLint, tests once, and a Vite
-production build; `npm run test:watch` supports local iteration.
+Use Vitest and React Testing Library for user-visible behavior. The App smoke
+test confirms the placeholder renders. Mock API tests use fake timers to cover
+data contracts, normalization, empty results, cancellation, controlled failures,
+resource cleanup, and fixture isolation. Redux tests use isolated stores, the
+mock API with fake timers, and controlled Promises for out-of-order responses.
+They cover async transitions, independent statuses/errors, dependent resets,
+cancellation, empty results, and stale fulfilled/rejected actions.
+`npm run verify` runs ESLint, tests once, and a Vite production build;
+`npm run test:watch` supports local iteration.
