@@ -14,6 +14,14 @@ ESLint checks JavaScript and JSX, React hooks, and refresh compatibility.
 Redux Toolkit and React Redux are installed for subsequent work. A store and
 Provider will be introduced when the search flow first needs shared state.
 
+## Current mock API (milestone 2)
+
+`src/services/mockApi.js` exposes `getManufacturers` and `getOffers`, backed by
+`src/services/mockFixtures.js`. Requests use a fixed 500 ms Promise delay, honor
+AbortSignal, and return copies of demo data. A reserved article triggers a
+controlled error. See `docs/api-contract.md` for the complete contract.
+The service is not yet connected to Redux or the UI.
+
 ## Proposed search flow for later milestones
 
 - A small search form owns its editable article number locally.
@@ -38,6 +46,7 @@ behavior warrants them. Do not create these future modules in milestone 1.
 
 Use Vitest and React Testing Library for user-visible behavior. Later tests
 should cover mock API contracts, async state transitions, failures, empty
-responses, and out-of-order responses. The current single smoke test confirms
-the placeholder renders. `npm run verify` runs ESLint, tests once, and a Vite
+responses, and out-of-order responses. The App smoke test confirms the placeholder renders. Mock API unit tests use
+fake timers to cover data contracts, normalization, empty results, cancellation,
+controlled failures, resource cleanup, and fixture isolation. `npm run verify` runs ESLint, tests once, and a Vite
 production build; `npm run test:watch` supports local iteration.
