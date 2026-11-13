@@ -22,8 +22,16 @@ manufacturer selection, a responsive offers table, all offers request states,
 retry, cancellation, stale response protection, and StrictMode tests. This takes
 precedence over the original labels below, which assigned offers to milestone 6.
 Milestone 05 builds on manufacturer selection already delivered in milestone 04.
-Milestone 06 remains unapproved; do not infer authorization for further work from
-the original sequence. No sorting, filtering, or pagination is included.
+No sorting, filtering, or pagination is included.
+
+## Approved milestone 06 scope clarification
+
+Milestone 06 is UI/UX polish and Russian UI localization, overriding the original
+labels below. It covers a light Bootstrap-based layout, responsive search and
+manufacturer controls, accessible offer presentation, Russian feedback and
+ru-RU prices using API currencies. Only fixture part names are translated; API
+behavior, Redux, debounce and request lifecycles stay unchanged. Technical docs
+remain in English. Milestone 07 and subsequent work require separate approval.
 
 1. **Foundation and harness (current):** Initialize Vite/React, install the stack,
    configure Node and npm scripts, add mandatory rules and project docs, and

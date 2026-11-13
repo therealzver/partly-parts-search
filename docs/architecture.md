@@ -70,8 +70,7 @@ article in StrictMode to verify a single timer/request and unmount cleanup.
 Redux selectors supply loading, failure, empty, and success feedback. Manufacturer
 buttons use native keyboard behavior, Bootstrap focus/selection styling, and
 `aria-pressed`. Selection dispatches `manufacturerSelected`; the offers section reacts to the
-shared selection as described below. Layout uses responsive Bootstrap columns
-and wrapping buttons, without custom CSS.
+shared selection as described below. Layout uses Bootstrap utilities and wrapping buttons, with a small shared stylesheet.
 
 ## Offers UI (milestone 05)
 
@@ -96,7 +95,7 @@ region announces loading and result counts; failures use an alert.
 
 `OffersTable.jsx` renders offer data as a semantic table with column headers,
 a caption, and Bootstrap's `table-responsive` wrapper. Prices use
-`Intl.NumberFormat('en-GB', { style: 'currency', currency })` with each offer's
+`Intl.NumberFormat('ru-RU', { style: 'currency', currency })` with each offer's
 currency; a separate column displays the ISO code. Zero stock remains visible.
 There is no sorting, filtering, or pagination.
 
@@ -119,3 +118,15 @@ a service that ignores cancellation. Existing Redux tests additionally exercise
 request ID guards against stale successes and failures without cancellation.
 `npm run verify` runs ESLint, tests once, and a Vite production build;
 `npm run test:watch` supports local iteration.
+
+## UI polish and localization (milestone 06)
+
+App provides a Russian header, main content and demo-data footer. Bootstrap
+utilities and src/styles.css define white panels, a neutral page background,
+a teal accent, visible focus outlines and reduced-motion support. Manufacturer
+buttons retain native keyboard semantics and aria-pressed; a check mark also
+identifies selection. The responsive table is a named, keyboard-focusable scroll
+region with numeric columns aligned right. Status regions and error alerts
+announce Russian feedback; internal API error strings are not exposed in the UI.
+Fixture part names are Russian; brands, articles, currency codes and API behavior
+are unchanged. No new dependencies or shared state behavior were introduced.

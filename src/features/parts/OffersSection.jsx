@@ -6,7 +6,6 @@ import {
   selectSelectedManufacturer,
   selectOffers,
   selectOffersStatus,
-  selectOffersError,
 } from './partsSlice.js'
 import OffersTable from './OffersTable.jsx'
 
@@ -16,7 +15,6 @@ export default function OffersSection() {
   const brand = useSelector(selectSelectedManufacturer)
   const offers = useSelector(selectOffers)
   const status = useSelector(selectOffersStatus)
-  const error = useSelector(selectOffersError)
   const [retry, setRetry] = useState(0)
 
   useEffect(() => {
@@ -35,23 +33,23 @@ export default function OffersSection() {
   }, [article, brand, dispatch, retry])
 
   return (
-    <section className="mt-4" aria-labelledby="offers-heading">
-      <h2 id="offers-heading">Alternatives and offers</h2>
-      {brand && <p>Selected manufacturer: <strong>{brand}</strong></p>}
-      <div role="status" aria-live="polite">
-        {status === 'idle' && <p className="text-body-secondary">Choose a manufacturer to see offers.</p>}
+    <section className="surface mt-4 p-3 p-md-4" aria-labelledby="offers-heading">
+      <h2 id="offers-heading" className="section-title">Аналоги и предложения</h2>
+      {brand && <p>Производитель: <strong>{brand}</strong></p>}
+      <div className="text-body-secondary" role="status" aria-live="polite">
+        {status === 'idle' && <p className="text-body-secondary">Выберите производителя, чтобы увидеть предложения.</p>}
         {status === 'loading' && <p>
           <span className="spinner-border spinner-border-sm me-2" aria-hidden="true" />
-          Loading offers…
+          Загружаем предложения…
         </p>}
         {status === 'succeeded' && <p>{offers.length
-          ? `${offers.length} offers found.`
-          : 'No alternatives or offers found.'}</p>}
+          ? `Предложений найдено: ${offers.length}.`
+          : 'Аналоги и предложения не найдены.'}</p>}
       </div>
       {status === 'failed' && <div role="alert" className="alert alert-danger">
-        <p>Could not load offers. {error}</p>
+        <p>Не удалось загрузить предложения. Попробуйте ещё раз.</p>
         <button type="button" className="btn btn-outline-danger" onClick={() => setRetry((value) => value + 1)}>
-          Retry offers
+          Повторить запрос
         </button>
       </div>}
       {status === 'succeeded' && offers.length > 0 && <OffersTable offers={offers} />}

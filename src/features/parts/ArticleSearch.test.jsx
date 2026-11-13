@@ -9,7 +9,7 @@ import ArticleSearch from './ArticleSearch.jsx'
 
 function setup(store = createAppStore()) {
   const view = render(<StrictMode><Provider store={store}><ArticleSearch /></Provider></StrictMode>)
-  const enter = (value) => fireEvent.change(screen.getByRole('textbox', { name: 'Article number' }), { target: { value } })
+  const enter = (value) => fireEvent.change(screen.getByRole('textbox', { name: 'Артикул запчасти' }), { target: { value } })
   return { ...view, store, enter }
 }
 
@@ -104,7 +104,7 @@ describe('Article search', () => {
     expect(search).toHaveBeenCalledExactlyOnceWith('OC384', { signal: expect.any(AbortSignal) })
     expect(screen.getByRole('textbox')).toHaveValue(' oc384 ')
     expect(store.getState().parts.article).toBe('OC384')
-    expect(screen.getByRole('status')).toHaveTextContent('Searching manufacturers')
+    expect(screen.getByRole('status')).toHaveTextContent('Ищем производителей')
     await advance(500)
     expect(screen.getByRole('button', { name: 'MAHLE' })).toHaveAttribute('aria-pressed', 'false')
     expect(screen.getByRole('button', { name: 'MANN-FILTER' })).toBeInTheDocument()
@@ -120,7 +120,7 @@ describe('Article search', () => {
     enter('   ')
     await advance(1000)
     expect(search).not.toHaveBeenCalled()
-    expect(screen.getByRole('status')).toHaveTextContent('Enter an article number')
+    expect(screen.getByRole('status')).toHaveTextContent('Введите артикул')
   })
 
   it('selects a manufacturer without fetching offers, then immediately clears dependent state on an edit', async () => {
@@ -146,11 +146,11 @@ describe('Article search', () => {
     const { enter } = setup()
     enter('unknown')
     await advance(950)
-    expect(screen.getByRole('status')).toHaveTextContent('No manufacturers found')
+    expect(screen.getByRole('status')).toHaveTextContent('Производители не найдены')
     enter('NETWORK_ERROR')
     await advance(950)
-    expect(screen.getByRole('alert')).toHaveTextContent('Could not load manufacturers')
-    expect(screen.getByRole('alert')).toHaveTextContent('Please try again')
+    expect(screen.getByRole('alert')).toHaveTextContent('Не удалось загрузить производителей')
+    expect(screen.getByRole('alert')).toHaveTextContent('Измените артикул')
     enter('OC384')
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     await advance(950)

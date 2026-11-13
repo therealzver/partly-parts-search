@@ -1,0 +1,52 @@
+:root {
+  --bs-primary: #176b62;
+  --bs-primary-rgb: 23, 107, 98;
+  --bs-body-color: #243532;
+  --bs-body-bg: #f5f7f7;
+  --bs-secondary-color: #586963;
+  --bs-border-color: #dce4e1;
+}
+body { min-width: 320px; }
+.container { max-width: 1120px; }
+.app-shell { min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; }
+.site-header { background: #fff; border-bottom: 1px solid var(--bs-border-color); }
+.wordmark { font-size: 1.75rem; font-weight: 750; letter-spacing: -.06em; }
+.wordmark span { color: var(--bs-primary); }
+h1 { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 650; letter-spacing: -.035em; }
+.section-title { font-size: 1.25rem; font-weight: 650; letter-spacing: -.02em; }
+.surface { background: #fff; border: 1px solid var(--bs-border-color); border-radius: 1rem; }
+.search-content { max-width: 720px; }
+.form-control { background: #fff; border-color: #7b8d86; }
+.form-control:focus { border-color: var(--bs-primary); box-shadow: 0 0 0 .2rem rgb(23 107 98 / 18%); }
+.form-control::placeholder { color: #67766f; }
+.form-text { color: var(--bs-secondary-color); line-height: 1.6; }
+.search-feedback { margin-top: 1.25rem; }
+.manufacturer-button { min-height: 46px; padding: .625rem 1rem; font-weight: 600; }
+.btn-primary {
+  --bs-btn-bg: #176b62; --bs-btn-border-color: #176b62;
+  --bs-btn-hover-bg: #10564f; --bs-btn-hover-border-color: #10564f;
+  --bs-btn-active-bg: #10564f; --bs-btn-active-border-color: #10564f;
+}
+.btn-outline-primary {
+  --bs-btn-color: #176b62; --bs-btn-border-color: #176b62;
+  --bs-btn-hover-bg: #176b62; --bs-btn-hover-border-color: #176b62;
+  --bs-btn-active-bg: #10564f; --bs-btn-active-border-color: #10564f;
+}
+.btn:focus-visible,
+.form-control:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--bs-primary);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+.table { --bs-table-bg: #fff; --bs-table-hover-bg: #f2f7f5; font-size: .9375rem; }
+.table th { background: #f5f7f7; color: #586963; font-size: .8125rem; font-weight: 600; white-space: nowrap; }
+.table > :not(caption) > * > * { padding: .875rem .75rem; border-color: #e5ebe8; }
+.table td:first-child { min-width: 180px; font-weight: 500; }
+.numeric { font-variant-numeric: tabular-nums; }
+caption { color: var(--bs-secondary-color); font-size: .8125rem; }
+.alert p:last-child { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

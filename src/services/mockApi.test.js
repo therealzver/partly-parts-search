@@ -35,8 +35,8 @@ describe('mock API', () => {
   it('returns original and alternative offers for an article and manufacturer', async () => {
     const offers = await finish(getOffers('OC384', 'MAHLE'))
     expect(offers).toEqual([
-      { id: 'oc384-mahle-1', article: 'OC384', name: 'Oil filter', manufacturer: 'MAHLE', price: 12.5, currency: 'EUR', stock: 24 },
-      { id: 'oc384-mahle-2', article: 'W712/95', name: 'Oil filter', manufacturer: 'MANN-FILTER', price: 14.9, currency: 'EUR', stock: 8 },
+      { id: 'oc384-mahle-1', article: 'OC384', name: 'Масляный фильтр', manufacturer: 'MAHLE', price: 12.5, currency: 'EUR', stock: 24 },
+      { id: 'oc384-mahle-2', article: 'W712/95', name: 'Масляный фильтр', manufacturer: 'MANN-FILTER', price: 14.9, currency: 'EUR', stock: 8 },
     ])
   })
 
