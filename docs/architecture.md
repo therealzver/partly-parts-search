@@ -121,7 +121,8 @@ request ID guards against stale successes and failures without cancellation.
 
 ## UI polish and localization (milestone 06)
 
-App provides a Russian header, main content and demo-data footer. Bootstrap
+App provides a Russian header and main content. The demo-data footer has been
+removed; demonstration-data limitations remain in `docs/api-contract.md`. Bootstrap
 utilities and src/styles.css define white panels, a neutral page background,
 a teal accent, visible focus outlines and reduced-motion support. Manufacturer
 buttons retain native keyboard semantics and aria-pressed; a check mark also

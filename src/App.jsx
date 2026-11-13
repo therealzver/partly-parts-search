@@ -18,9 +18,6 @@ export default function App() {
         <ArticleSearch />
         <OffersSection />
       </main>
-      <footer className="container pb-4 text-body-secondary small">
-        Partly · Демонстрационные данные. Цены и остатки приведены для примера.
-      </footer>
     </div>
   )
 }
