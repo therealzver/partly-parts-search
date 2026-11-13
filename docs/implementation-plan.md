@@ -15,6 +15,16 @@ its UI request integration are deferred to milestone 05 per the current task;
 no offers requests or table are added in milestone 04. This clarification takes
 precedence over the original milestone labels below.
 
+## Approved milestone 05 scope clarification
+
+The milestone 05 task explicitly authorizes fetching alternatives/offers on
+manufacturer selection, a responsive offers table, all offers request states,
+retry, cancellation, stale response protection, and StrictMode tests. This takes
+precedence over the original labels below, which assigned offers to milestone 6.
+Milestone 05 builds on manufacturer selection already delivered in milestone 04.
+Milestone 06 remains unapproved; do not infer authorization for further work from
+the original sequence. No sorting, filtering, or pagination is included.
+
 1. **Foundation and harness (current):** Initialize Vite/React, install the stack,
    configure Node and npm scripts, add mandatory rules and project docs, and
    verify a minimal placeholder with one smoke test.

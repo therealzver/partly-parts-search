@@ -1,4 +1,5 @@
 import ArticleSearch from './features/parts/ArticleSearch.jsx'
+import OffersSection from './features/parts/OffersSection.jsx'
 
 export default function App() {
   return (
@@ -6,6 +7,7 @@ export default function App() {
       <h1>Partly</h1>
       <p className="lead">Auto parts search</p>
       <ArticleSearch />
+      <OffersSection />
     </main>
   )
 }

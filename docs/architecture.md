@@ -21,7 +21,7 @@ React Redux Provider. The search UI dispatches manufacturer requests after a 450
 `src/services/mockFixtures.js`. Requests use a fixed 500 ms Promise delay, honor
 AbortSignal, and return copies of demo data. A reserved article triggers a
 controlled error. See `docs/api-contract.md` for the complete contract.
-Redux thunks call this service; the UI uses the manufacturer search thunk.
+Redux thunks call this service; the UI uses both search thunks.
 
 ## Current Redux state (milestone 3)
 
@@ -69,29 +69,36 @@ article in StrictMode to verify a single timer/request and unmount cleanup.
 
 Redux selectors supply loading, failure, empty, and success feedback. Manufacturer
 buttons use native keyboard behavior, Bootstrap focus/selection styling, and
-`aria-pressed`. Selection dispatches `manufacturerSelected` only; offers are not
-requested or rendered in this milestone. Layout uses responsive Bootstrap columns
+`aria-pressed`. Selection dispatches `manufacturerSelected`; the offers section reacts to the
+shared selection as described below. Layout uses responsive Bootstrap columns
 and wrapping buttons, without custom CSS.
 
-## Proposed search flow for later milestones
+## Offers UI (milestone 05)
 
-- A small search form owns its editable article number locally.
-- Redux Toolkit stores the submitted article, manufacturer results, selected
-  manufacturer, alternative parts/offers, and request status/errors.
-- Async thunks call a local mock API module. That module owns fixtures, simulated
-  latency, and deterministic empty/error cases; components do not read fixtures.
-- Selecting a manufacturer fetches alternatives and offers using the submitted
-  article and manufacturer. Results show name, manufacturer, price, and stock.
-- A new article clears dependent selection/results. Changing manufacturer clears
-  dependent offers. Use thunk request IDs and current request inputs to ignore
-  stale fulfilled/rejected actions. Cancellation may reduce obsolete work, but
-  stale-response guards are still required.
-- Render explicit idle, loading, success, empty, and failure states. Keep errors
-  understandable and provide retry behavior when implemented.
+App renders `OffersSection.jsx` alongside the article search. The section reads
+article, selected manufacturer, offers, status, and error through existing Redux
+selectors. Its effect dispatches `fetchOffers({ article, brand })` only when both
+inputs exist. The article is already normalized by the search input handler.
+API calls, response handling, and stale request guards remain in the existing
+thunk/service/reducers; no API or Redux contract changes were needed.
 
-Start with a search feature directory containing a slice and small components,
-plus a separate mock API module. Extract additional modules only when concrete
-behavior warrants them. Do not create these future modules in milestone 1.
+Dispatch is deferred to a microtask with a cleanup flag, so StrictMode's initial
+setup/cleanup replay starts only one request even with a preselected manufacturer.
+Cleanup prevents a queued dispatch and calls the dispatch promise's `abort()`
+for an active request on input changes or unmount. The existing reducer resets
+clear dependent data immediately; request IDs and current parameters protect
+against obsolete responses and errors. Cancellation does not produce an alert.
+
+The section presents idle, loading, success, empty, and failure states. A native
+retry button increments a local retry counter to rerun the same effect with its
+cleanup. Manufacturer and offers errors remain independent. A polite status
+region announces loading and result counts; failures use an alert.
+
+`OffersTable.jsx` renders offer data as a semantic table with column headers,
+a caption, and Bootstrap's `table-responsive` wrapper. Prices use
+`Intl.NumberFormat('en-GB', { style: 'currency', currency })` with each offer's
+currency; a separate column displays the ISO code. Zero stock remains visible.
+There is no sorting, filtering, or pagination.
 
 ## Verification
 
@@ -104,5 +111,11 @@ resource cleanup, and fixture isolation. Redux tests use isolated stores, the
 mock API with fake timers, and controlled Promises for out-of-order responses.
 They cover async transitions, independent statuses/errors, dependent resets,
 cancellation, empty results, and stale fulfilled/rejected actions.
+Offers UI tests use fake timers, isolated stores, and StrictMode to cover
+manufacturer button integration, normalized request inputs, loading, table fields,
+currency formatting, zero stock, empty responses, failure/retry, immediate resets,
+cancellation on manufacturer/article changes and unmount, and late responses from
+a service that ignores cancellation. Existing Redux tests additionally exercise
+request ID guards against stale successes and failures without cancellation.
 `npm run verify` runs ESLint, tests once, and a Vite production build;
 `npm run test:watch` supports local iteration.
