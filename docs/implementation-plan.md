@@ -4,6 +4,17 @@ Each milestone requires explicit approval before implementation. Complete and
 verify only the requested milestone, then stop for review. Run `npm run verify`
 at every handoff and report changes, results, and limitations.
 
+## Approved milestone 04 scope clarification
+
+The milestone 04 task explicitly includes displaying and selecting manufacturers,
+which the original sequence below assigned to milestone 5. Milestone 04 therefore
+covers the article input, 450 ms debounce, normalization, immediate dependent-state
+reset, manufacturer feedback and selection, request cancellation, and UI tests.
+Selecting a manufacturer only updates Redux. The alternatives/offers table and
+its UI request integration are deferred to milestone 05 per the current task;
+no offers requests or table are added in milestone 04. This clarification takes
+precedence over the original milestone labels below.
+
 1. **Foundation and harness (current):** Initialize Vite/React, install the stack,
    configure Node and npm scripts, add mandatory rules and project docs, and
    verify a minimal placeholder with one smoke test.

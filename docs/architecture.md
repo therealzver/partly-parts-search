@@ -7,13 +7,13 @@ needed. No router, backend, or extra state library is planned.
 ## Current foundation
 
 `index.html` mounts `src/main.jsx`, which imports Bootstrap CSS and renders
-`src/App.jsx` in React StrictMode. App is a static placeholder. Vite and Vitest
+`src/App.jsx` in React StrictMode. App renders the article search interface. Vite and Vitest
 share `vite.config.js`. The test setup provides DOM matchers and cleanup.
 ESLint checks JavaScript and JSX, React hooks, and refresh compatibility.
 
 `src/app/store.js` configures a single `parts` reducer and exports the application
 store plus `createAppStore` for isolated tests. `src/main.jsx` wraps App in the
-React Redux Provider. The placeholder UI does not initiate requests yet.
+React Redux Provider. The search UI dispatches manufacturer requests after a 450 ms debounce.
 
 ## Current mock API (milestone 2)
 
@@ -21,7 +21,7 @@ React Redux Provider. The placeholder UI does not initiate requests yet.
 `src/services/mockFixtures.js`. Requests use a fixed 500 ms Promise delay, honor
 AbortSignal, and return copies of demo data. A reserved article triggers a
 controlled error. See `docs/api-contract.md` for the complete contract.
-Redux thunks call this service; the UI is not yet connected to search behavior.
+Redux thunks call this service; the UI uses the manufacturer search thunk.
 
 ## Current Redux state (milestone 3)
 
@@ -50,6 +50,29 @@ Simple selectors expose UI data without memoization.
   Request cancellation belongs to callers: later UI lifecycle code should abort
   obsolete dispatch promises. State guards protect correctness even without abort.
 
+## Current article search UI (milestone 4)
+
+`src/features/parts/ArticleSearch.jsx` owns the editable input locally. Its change
+handler immediately submits the trimmed, uppercased article to `articleChanged`,
+clearing dependent state when the normalized article changes. Internal whitespace
+and punctuation remain intact; equivalent case/outer-whitespace edits keep the
+same search identity.
+
+One effect watches the normalized article and waits 450 ms before dispatching
+`fetchManufacturers`. Empty normalized input schedules nothing. Each cleanup
+clears the debounce timer and aborts any dispatched request, covering article changes,
+unmounting, and StrictMode effect replay. The component relies on existing Redux
+request guards rather than duplicating request IDs or response state locally.
+Equivalent case/outer-whitespace edits do not restart the debounce, abort an
+active request, or refresh results. Tests also mount with a prefilled Redux
+article in StrictMode to verify a single timer/request and unmount cleanup.
+
+Redux selectors supply loading, failure, empty, and success feedback. Manufacturer
+buttons use native keyboard behavior, Bootstrap focus/selection styling, and
+`aria-pressed`. Selection dispatches `manufacturerSelected` only; offers are not
+requested or rendered in this milestone. Layout uses responsive Bootstrap columns
+and wrapping buttons, without custom CSS.
+
 ## Proposed search flow for later milestones
 
 - A small search form owns its editable article number locally.
@@ -73,7 +96,9 @@ behavior warrants them. Do not create these future modules in milestone 1.
 ## Verification
 
 Use Vitest and React Testing Library for user-visible behavior. The App smoke
-test confirms the placeholder renders. Mock API tests use fake timers to cover
+test confirms the landing page renders. Article search tests use StrictMode,
+isolated stores, the real mock API, and fake timers to verify debounce, input
+normalization, selection/reset, empty/error feedback, cancellation, and cleanup. Mock API tests use fake timers to cover
 data contracts, normalization, empty results, cancellation, controlled failures,
 resource cleanup, and fixture isolation. Redux tests use isolated stores, the
 mock API with fake timers, and controlled Promises for out-of-order responses.
