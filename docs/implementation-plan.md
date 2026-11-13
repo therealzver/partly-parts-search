@@ -77,3 +77,13 @@ the original milestone 8 label above; UI polish was delivered in milestone 06.
 Business logic, Redux, Mock API, UI, and package versions remain unchanged.
 Stop for code review after verification. Milestone 09 is reserved for separately
 approved GitHub Pages deployment; no deployment is included in milestone 08.
+
+## Approved milestone 09 scope clarification
+
+Milestone 09 configures production deployment to GitHub Pages at
+`https://therealzver.github.io/partly-parts-search/`: Vite base path, an official
+GitHub Actions deployment workflow with Node.js 24 and verification before
+publication, production asset path checks, and deployment documentation.
+Existing CI, application behavior, dependencies, Redux, and Mock API stay unchanged.
+No commit, push, remote changes, or live publication are performed during setup.
+Stop for final code review after local verification.

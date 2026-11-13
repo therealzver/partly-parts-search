@@ -140,4 +140,16 @@ are unchanged. No new dependencies or shared state behavior were introduced.
 mock limitations, and testing guidance. `.github/workflows/ci.yml` runs on pushes
 and pull requests targeting `main`: Node.js 24, npm cache keyed by the lockfile,
 `npm ci`, then `npm run verify`. Repository permissions are read-only; checkout
-does not persist credentials. No deployment or external API keys are configured.
+does not persist credentials. No external API keys are configured.
+
+## GitHub Pages deployment (milestone 09)
+
+Vite uses `/partly-parts-search/` as its base for development and production.
+`.github/workflows/deploy.yml` runs on pushes to `main` and manual dispatches
+from `main`. A read-only build job uses Node.js 24, `npm ci`, and `npm run verify`
+(including the production build), then uploads only `dist/`. A dependent deploy
+job configures Pages and publishes the artifact to the `github-pages` environment
+with `pages: write` and `id-token: write`. The `pages` concurrency group serializes
+runs without interrupting an active deployment. Existing CI remains independent.
+Repository Pages settings must select GitHub Actions as the publishing source.
+Live publication must be confirmed separately after the workflow succeeds.

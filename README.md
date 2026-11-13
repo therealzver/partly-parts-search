@@ -95,9 +95,28 @@ StrictMode, ответы и ошибки в произвольном поряд�
 `.github/workflows/ci.yml` запускается при push в `main` и pull request в `main`.
 На Ubuntu устанавливается Node.js 24, кэшируется npm-кэш по `package-lock.json`,
 затем выполняются `npm ci` и `npm run verify`. Доступ к репозиторию только на чтение;
-дополнительные секреты и внешние API-ключи не требуются. Автоматического деплоя нет.
+дополнительные секреты и внешние API-ключи не требуются.
 
 ## Демонстрация
 
-GitHub Pages пока не настроен. Проверенная ссылка будет добавлена после
-публикации в Milestone 09.
+Целевой URL: https://therealzver.github.io/partly-parts-search/
+
+Ссылка станет рабочей после успешного deployment; публикация пока не подтверждена.
+В репозитории откройте **Settings → Pages → Build and deployment → Source → GitHub Actions**.
+
+`.github/workflows/deploy.yml` запускается при push в `main` или вручную через
+**Actions → Deploy to GitHub Pages → Run workflow** (выберите ветку `main`).
+На Node.js 24 выполняются `npm ci` и `npm run verify`, включая production build.
+После успешных проверок только содержимое `dist/` публикуется официальными GitHub
+Actions в environment `github-pages`. Деплои выполняются последовательно;
+дополнительные секреты не нужны. Существующий CI работает независимо.
+
+Vite использует `base: '/partly-parts-search/'`. Для локальной проверки выполните
+`npm run build` и `npm run preview`, затем откройте адрес с этим подкаталогом,
+обычно http://localhost:4173/partly-parts-search/.
+`npm run dev` также выводит адрес с `/partly-parts-search/`.
+
+После публикации проверьте успешный workflow и URL в environment `github-pages`,
+загрузку страницы и JS/CSS без 404, обновление страницы, поиск `OC384`, выбор
+производителя и отображение предложений. При переименовании репозитория или
+переходе на собственный домен потребуется пересмотреть `base`.
