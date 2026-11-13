@@ -57,3 +57,13 @@ remain in English. Milestone 07 and subsequent work require separate approval.
 9. **Final validation and handoff:** Complete end-to-end user-flow integration
    coverage with React Testing Library, check edge cases, update run instructions
    and architecture docs, and report final verification and known limitations.
+
+## Approved milestone 07 scope clarification
+
+Milestone 07 covers comprehensive regression testing, request races, Redux state
+consistency, integration flows, and a code review of localization, accessibility,
+and performance. Add missing tests without duplicating existing coverage; fix
+only reproduced defects with minimal changes. No new product behavior, broad
+refactoring, dependencies, sorting, filtering, or pagination. See
+`docs/milestone-07-review.md` for coverage and review limitations. Stop for code
+review after verification; milestone 08 remains unapproved.

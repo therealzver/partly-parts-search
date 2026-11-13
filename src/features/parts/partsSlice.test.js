@@ -282,4 +282,70 @@ describe('parts state and thunks', () => {
       selectedManufacturer: null, offers: [], offersStatus: 'idle', manufacturersStatus: 'succeeded',
     })
   })
+
+  describe.each(['manufacturers', 'offers'])('%s stale settlements', (kind) => {
+    it.each(['resolve', 'reject', 'abort'])(
+      'preserves the current loading request after an old %s', async (settle) => {
+        if (kind === 'offers') await selectMahle(store)
+        const old = deferred()
+        const method = kind === 'offers' ? 'getOffers' : 'getManufacturers'
+        vi.spyOn(api, method).mockReturnValueOnce(old.promise)
+        const fetch = () => store.dispatch(kind === 'offers'
+          ? fetchOffers({ article: 'OC384', brand: 'MAHLE' })
+          : fetchManufacturers('OC384'))
+        const first = fetch()
+        const current = fetch()
+        const before = store.getState()
+        if (settle === 'abort') first.abort()
+        else old[settle](settle === 'resolve' ? [] : new Error('Obsolete failure'))
+        await first
+        expect(store.getState()).toBe(before)
+        expect(store.getState().parts).toMatchObject({
+          [`${kind}Status`]: 'loading',
+          [`${kind}RequestId`]: current.requestId,
+          [`${kind}Error`]: null,
+        })
+        if (settle === 'abort') old.resolve([])
+        await complete(current)
+        expect(store.getState().parts[`${kind}Status`]).toBe('succeeded')
+      },
+    )
+
+    it('preserves a newer failure when an old success arrives', async () => {
+      if (kind === 'offers') await selectMahle(store)
+      const old = deferred()
+      const method = kind === 'offers' ? 'getOffers' : 'getManufacturers'
+      vi.spyOn(api, method).mockReturnValueOnce(old.promise)
+        .mockRejectedValueOnce(new Error('Current failure'))
+      const fetch = () => store.dispatch(kind === 'offers'
+        ? fetchOffers({ article: 'OC384', brand: 'MAHLE' })
+        : fetchManufacturers('OC384'))
+      const first = fetch()
+      await fetch()
+      const before = store.getState()
+      old.resolve([])
+      await first
+      expect(store.getState()).toBe(before)
+      expect(store.getState().parts).toMatchObject({
+        [`${kind}Status`]: 'failed', [`${kind}Error`]: 'Current failure',
+        [`${kind}RequestId`]: null,
+      })
+    })
+
+    it('does not call the service when the thunk signal is already aborted', async () => {
+      if (kind === 'offers') await selectMahle(store)
+      const spy = vi.spyOn(api, kind === 'offers' ? 'getOffers' : 'getManufacturers')
+      const controller = new AbortController()
+      controller.abort()
+      const thunk = kind === 'offers'
+        ? fetchOffers({ article: 'OC384', brand: 'MAHLE' }, { signal: controller.signal })
+        : fetchManufacturers('OC384', { signal: controller.signal })
+      const before = store.getState()
+      await store.dispatch(thunk)
+      expect(spy).not.toHaveBeenCalled()
+      expect(store.getState()).toBe(before)
+      expect(vi.getTimerCount()).toBe(0)
+    })
+  })
+
 })
