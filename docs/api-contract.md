@@ -1,8 +1,8 @@
 # Mock API contract (Milestone 02)
 
 Import named methods from `src/services/mockApi.js`. Fixtures live separately in
-`src/services/mockFixtures.js`. No HTTP requests, backend, Redux, or UI integration
-is involved. Both methods return Promises with a fixed 500 ms simulated latency
+`src/services/mockFixtures.js`. The service makes no HTTP requests and has no
+backend, Redux, or UI dependencies. Redux thunks call it on behalf of the UI. Both methods return Promises with a fixed 500 ms simulated latency
 (within the required 300–800 ms range); normal requests never fail randomly.
 Options can be omitted. When supplied, `signal` must be an AbortSignal.
 
@@ -33,9 +33,9 @@ illustrative alternative and can have a different article/manufacturer.
 ```js
 await getOffers('OC384', 'MAHLE')
 // [
-//   { id: 'oc384-mahle-1', article: 'OC384', name: 'Oil filter',
+//   { id: 'oc384-mahle-1', article: 'OC384', name: 'Масляный фильтр',
 //     manufacturer: 'MAHLE', price: 12.5, currency: 'EUR', stock: 24 },
-//   { id: 'oc384-mahle-2', article: 'W712/95', name: 'Oil filter',
+//   { id: 'oc384-mahle-2', article: 'W712/95', name: 'Масляный фильтр',
 //     manufacturer: 'MANN-FILTER', price: 14.9, currency: 'EUR', stock: 8 }
 // ]
 ```
@@ -95,5 +95,6 @@ brand names resemble real manufacturers, but compatibility is not verified.
 Do not use these fixtures for purchasing or fitment decisions. There is no
 persistence, pagination, supplier metadata, currency conversion, or real network
 failure detection. Timing is fixed, though runtime scheduling can delay callbacks.
-Requests are independent: consumers in later milestones must guard state against
-out-of-order responses; the service does not decide which request is current.
+Requests are independent: Redux reducers guard state against out-of-order
+responses using request IDs and current inputs; the service does not decide
+which request is current.

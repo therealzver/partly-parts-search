@@ -33,7 +33,7 @@ ru-RU prices using API currencies. Only fixture part names are translated; API
 behavior, Redux, debounce and request lifecycles stay unchanged. Technical docs
 remain in English. Milestone 07 and subsequent work require separate approval.
 
-1. **Foundation and harness (current):** Initialize Vite/React, install the stack,
+1. **Foundation and harness:** Initialize Vite/React, install the stack,
    configure Node and npm scripts, add mandatory rules and project docs, and
    verify a minimal placeholder with one smoke test.
 2. **Mock API:** Define article/manufacturer/part/offer contracts, local fixtures,
@@ -66,4 +66,14 @@ and performance. Add missing tests without duplicating existing coverage; fix
 only reproduced defects with minimal changes. No new product behavior, broad
 refactoring, dependencies, sorting, filtering, or pagination. See
 `docs/milestone-07-review.md` for coverage and review limitations. Stop for code
-review after verification; milestone 08 remains unapproved.
+review after verification; milestone 08 requires separate approval.
+
+## Approved milestone 08 scope clarification
+
+Milestone 08 covers a Russian reviewer-facing README, GitHub Actions CI for push
+and pull requests to `main` using Node.js 24, npm caching, `npm ci`, and
+`npm run verify`, plus reproducibility and documentation checks. This overrides
+the original milestone 8 label above; UI polish was delivered in milestone 06.
+Business logic, Redux, Mock API, UI, and package versions remain unchanged.
+Stop for code review after verification. Milestone 09 is reserved for separately
+approved GitHub Pages deployment; no deployment is included in milestone 08.

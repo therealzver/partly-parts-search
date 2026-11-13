@@ -1,4 +1,4 @@
-# Proposed architecture
+# Application architecture
 
 Keep this a small client-side React application, built with Vite. Use Bootstrap 5
 utility and component classes for layout and styling; add custom CSS only when
@@ -47,7 +47,7 @@ Simple selectors expose UI data without memoization.
 - Both fulfilled and rejected reducers require the active request ID and matching
   current inputs. Changing inputs invalidates IDs immediately, so switching away
   and back cannot revive old results. No controllers or promises enter Redux state.
-  Request cancellation belongs to callers: later UI lifecycle code should abort
+  Request cancellation belongs to callers: UI effect cleanup aborts
   obsolete dispatch promises. State guards protect correctness even without abort.
 
 ## Current article search UI (milestone 4)
@@ -75,8 +75,10 @@ shared selection as described below. Layout uses Bootstrap utilities and wrappin
 ## Offers UI (milestone 05)
 
 App renders `OffersSection.jsx` alongside the article search. The section reads
-article, selected manufacturer, offers, status, and error through existing Redux
-selectors. Its effect dispatches `fetchOffers({ article, brand })` only when both
+article, selected manufacturer, offers, and request status through existing Redux
+selectors. When the status is `failed`, it displays the fixed Russian message
+«Не удалось загрузить предложения. Попробуйте ещё раз.» rather than the API error
+stored in Redux. Its effect dispatches `fetchOffers({ article, brand })` only when both
 inputs exist. The article is already normalized by the search input handler.
 API calls, response handling, and stale request guards remain in the existing
 thunk/service/reducers; no API or Redux contract changes were needed.
@@ -131,3 +133,11 @@ region with numeric columns aligned right. Status regions and error alerts
 announce Russian feedback; internal API error strings are not exposed in the UI.
 Fixture part names are Russian; brands, articles, currency codes and API behavior
 are unchanged. No new dependencies or shared state behavior were introduced.
+
+## Documentation and CI (milestone 08)
+
+`README.md` provides Russian setup instructions, fixture examples, architecture,
+mock limitations, and testing guidance. `.github/workflows/ci.yml` runs on pushes
+and pull requests targeting `main`: Node.js 24, npm cache keyed by the lockfile,
+`npm ci`, then `npm run verify`. Repository permissions are read-only; checkout
+does not persist credentials. No deployment or external API keys are configured.
